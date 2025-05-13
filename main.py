@@ -1,8 +1,10 @@
 #this is a test interface for the agents
 import asyncio
+import argparse
 from agents import Runner, RunConfig
 from providers.ollama_provider import CustomModelProvider
 from Agents.orchestrator_agent import create_orchestrator_agent
+from tools.survey_parse import parse_qa_csv
 
 CUSTOM_MODEL_PROVIDER = CustomModelProvider()
 
@@ -19,9 +21,25 @@ def print_intro():
     print("This is a test interface for the agents.")
 
 async def main(): 
+    parser = argparse.ArgumentParser(description="Parse a CSV file to create context")
+    parser.add_argument("file_path", type=str, help="Path to the CSV file")
+    args = parser.parse_args()
+
+    qa = parse_qa_csv(args.file_path)
+    surveyString = str(qa)
+    buildContext = f"Build conext for the business described: {surveyString}"
+
     testAgent = create_orchestrator_agent()
-    print_agent_info(testAgent)
     print_intro()
+
+    context = await Runner.run(
+        testAgent,
+        buildContext,
+        run_config=RunConfig(
+            model_provider = CUSTOM_MODEL_PROVIDER,
+        )
+    )
+    print(f"Context: {context.final_output}")
     
     while True:
         try: 
@@ -33,6 +51,7 @@ async def main():
             response = await Runner.run(
                 testAgent,
                 user_input,
+                context=context.final_output,
                 run_config=RunConfig(
                     model_provider = CUSTOM_MODEL_PROVIDER,
                 )
