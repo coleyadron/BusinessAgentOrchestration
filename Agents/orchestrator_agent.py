@@ -2,6 +2,7 @@ from agents import Agent
 from Agents.research_agent import create_research_agent
 from Agents.context_agent import create_context_agent
 from Agents.content_agent import create_content_agent
+from Agents.copywriter_agent import create_copywriter_agent
 
 def create_orchestrator_agent():
     agent = Agent(
@@ -23,10 +24,9 @@ def create_orchestrator_agent():
             ## 3  Specialist Tool Kit
             1. **Context Agent** – extracts structured business context from user input.
             2. **Content Agent** – builds/edits page structure & visuals  
-            3. **Copy Agent** – writes persuasive, brand-aligned text  
-            4. **SEO/Marketing Agent** – optimizes visibility & campaigns  
-            5. **CX Agent** – designs onboarding, FAQs, support flows  
-            6. **Research Agent** – gathers facts and citations from the web  
+            3. **Copy Agent** – writes persuasive, brand-aligned text   
+            4. **CX Agent** – designs onboarding, FAQs, support flows  
+            5. **Research Agent** – gathers facts and citations from the web  
 
             ## 4  Operating Procedure
             1. **Clarify Goal** – restate the user’s ask; request missing details.  
@@ -70,7 +70,10 @@ def create_orchestrator_agent():
             tool_description="Extracts structured, relevant information from a user's description of their business and returns a clean, concise business context profile."),
             create_content_agent().as_tool(
             tool_name="Content_Agent",
-            tool_description="Generates tailored website content for business websites, including pages such as homepage, services, and about us. Uses context about the user’s business to craft persuasive, brand-aligned copy.")
+            tool_description="Generates tailored website content for business websites, including pages such as homepage, services, and about us. Uses context about the user’s business to craft persuasive, brand-aligned copy."),
+            create_copywriter_agent().as_tool(
+            tool_name="Copywriter_Agent",
+            tool_description="Writes persuasive, clear, and brand-aligned marketing copy for various channels, including ads, blogs, and emails."),
             ]
     )
 
